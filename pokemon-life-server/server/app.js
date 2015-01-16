@@ -5,26 +5,28 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+
 //Requerido
-var session = require('express-session');
+//var session = require('express-session');
 var routes = require('./routes/index');
+
+var app = express();
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
-var app = express();
 
-//Este se llama al logearte
-passport.serializeUser(function(user, done) {
-    console.log("Serealize User: " + user);
-  done(null, user);
-});
+//Este se llama al logearte, sirve para guardar en session
+//passport.serializeUser(function(user, done) {
+//    console.log("Serealize User: " + user);
+//  done(null, user);
+//});
 
 //Este se llama antes de enrutar un request
-passport.deserializeUser(function(user, done) {
-  console.log("Deserealize User: " + user.openId);
-  done(null, user);
-});
+//passport.deserializeUser(function(user, done) {
+//  console.log("Deserealize User: " + user.openId);
+//  done(null, user);
+//});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,8 +43,13 @@ app.use(cookieParser());
 //app.use(session({secret: 'ohhhh!!', saveUninitialized: true, resave: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-passport.use(new LocalStrategy(
+passport.use(new LocalStrategy(/*{
+    usernameField: 'email',
+    passwordField: 'password'
+  },*/
   function(username, password, done) {
+    console.log("Login: username: " + username + ", password: " + password);
+    done(null, username);
 //    User.findOne({ username: username }, function (err, user) {
 //      if (err) { return done(err); }
 //      if (!user) {
@@ -61,6 +68,11 @@ app.use(passport.initialize());
 //app.use(passport.session());
 
 app.use('/', routes);
+
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/', session: false,
+                                   failureFlash: true })
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
