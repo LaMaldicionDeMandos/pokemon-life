@@ -5,28 +5,12 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-
-//Requerido
-//var session = require('express-session');
 var routes = require('./routes/index');
 
 var app = express();
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
-
-
-//Este se llama al logearte, sirve para guardar en session
-//passport.serializeUser(function(user, done) {
-//    console.log("Serealize User: " + user);
-//  done(null, user);
-//});
-
-//Este se llama antes de enrutar un request
-//passport.deserializeUser(function(user, done) {
-//  console.log("Deserealize User: " + user.openId);
-//  done(null, user);
-//});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +23,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-//No voy a usar session, asi que esto no deberia ir.
-//app.use(session({secret: 'ohhhh!!', saveUninitialized: true, resave: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 passport.use(new LocalStrategy(/*{
@@ -49,30 +31,25 @@ passport.use(new LocalStrategy(/*{
   },*/
   function(username, password, done) {
     console.log("Login: username: " + username + ", password: " + password);
-    done(null, username);
-//    User.findOne({ username: username }, function (err, user) {
-//      if (err) { return done(err); }
-//      if (!user) {
-//        return done(null, false, { message: 'Incorrect username.' });
-//      }
-//      if (!user.validPassword(password)) {
-//        return done(null, false, { message: 'Incorrect password.' });
-//      }
-//      return done(null, user);
-//    });
+    done(null, "token");
   }
 ));
 
 app.use(passport.initialize());
-//No voy a usar sessions
-//app.use(passport.session());
 
 app.use('/', routes);
 
-app.post('/login',
-  passport.authenticate('local', { successRedirect: '/', session: false,
-                                   failureFlash: true })
-);
+app.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, token, info) {
+    if (err) { return next(err); }
+    if (token) {
+        console.log("Token: " + token);
+        return res.send(token);
+    } else {
+        return res.status(404).end();
+    }
+  })(req, res, next);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
