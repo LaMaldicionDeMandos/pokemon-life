@@ -45,7 +45,7 @@ app.post('/login', function(req, res, next) {
 
 //Use Routers
 app.all('/api/*', function(req, res, next) {
-    console.log("Uso api, hay que autorizar");
+    console.log("Uso api, hay que autorizar usuario: " + req.get('username'));
     next();
 });
 app.use('/api/catalog', catalog);
