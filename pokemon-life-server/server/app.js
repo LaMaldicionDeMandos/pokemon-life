@@ -6,9 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 // Routers
-var catalog = require('./routers/catalog');
+var catalog = require('./routes/catalog');
 
 var app = express();
+
+app.set('view engine', 'jade');
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -42,7 +44,7 @@ app.post('/login', function(req, res, next) {
 });
 
 //Use Routers
-app.all('/api/', function(req, res, next) {
+app.all('/api/*', function(req, res, next) {
     console.log("Uso api, hay que autorizar");
     next();
 });
