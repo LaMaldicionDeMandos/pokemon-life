@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Routers
+var catalog = require('./routers/catalog');
+
 var app = express();
 
 var passport = require('passport')
@@ -37,6 +40,13 @@ app.post('/login', function(req, res, next) {
     }
   })(req, res, next);
 });
+
+//Use Routers
+app.all('/api/', function(req, res, next) {
+    console.log("Uso api, hay que autorizar");
+    next();
+});
+app.use('/api/catalog', catalog);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
