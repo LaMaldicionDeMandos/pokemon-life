@@ -10,6 +10,8 @@ var catalog = require('./routes/catalog');
 
 var app = express();
 
+var user, pass, token;
+
 app.set('view engine', 'jade');
 
 var passport = require('passport')
@@ -25,7 +27,10 @@ app.use(cookieParser());
 passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("Login: username: " + username + ", password: " + password);
-    done(null, "token");
+    user = username;
+    pass = password;
+    token = "Token";
+    done(null, token);
   }
 ));
 
@@ -45,7 +50,8 @@ app.post('/login', function(req, res, next) {
 
 //Use Routers
 app.all('/api/*', function(req, res, next) {
-    console.log("Uso api, hay que autorizar usuario: " + req.get('username'));
+    console.log("Uso api, hay que autorizar usuario: " + user + " password: " + pass + " Token: " + token);
+    console.log("usuario: " + req.get('username') + " password: " + req.get('password') + " Token: " + req.get('token'));
     next();
 });
 app.use('/api/catalog', catalog);
