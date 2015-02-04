@@ -8,9 +8,10 @@ var bodyParser = require('body-parser');
 // Routers
 var catalog = require('./routes/catalog');
 
-var app = express();
+//DB
+var db = require('./db/db');
 
-var user, pass, token;
+var app = express();
 
 app.set('view engine', 'jade');
 
@@ -27,10 +28,25 @@ app.use(cookieParser());
 passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("Login: username: " + username + ", password: " + password);
-    user = username;
-    pass = password;
-    token = "Token";
-    done(null, token);
+    if (db.existUserByUsername(username)) {
+        var user = db.findUserByUsername(username);
+        if (password == undefined || password != user.password) {
+            var err = new Error('Not Invalid user or password');
+            done(err);
+        } else {
+            user.token = "Generate Token";
+            db.updateUser(user);
+            done(null, token);
+        }
+    } else {
+        var user = {
+            username: username,
+            password: password,
+            token: "Generate Token"
+        };
+        db.saveUser(user);
+        done(null, token);
+    }
   }
 ));
 
@@ -50,8 +66,20 @@ app.post('/login', function(req, res, next) {
 
 //Use Routers
 app.all('/api/*', function(req, res, next) {
-    console.log("Uso api, hay que autorizar usuario: " + user + " password: " + pass + " Token: " + token);
-    console.log("usuario: " + req.get('username') + " password: " + req.get('password') + " Token: " + req.get('token'));
+    var username = req.get('username');
+    var password = req.get('password');
+    var token = req.get('token');
+    var user = db.findUserByUsername(username);
+    console.log("username: " + username);
+    console.log("password: " + password);
+    console.log("token: " + token);
+    console.log("Deberia ser:");
+    console.log("username: " + user.username);
+    console.log("password: " + user.password);
+    console.log("token: " + user.token);
+    if (user == null || password != user.password || token != user.token) {
+        return req.status(404);
+    }
     next();
 });
 app.use('/api/catalog', catalog);
