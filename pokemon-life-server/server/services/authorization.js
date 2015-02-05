@@ -1,4 +1,5 @@
 var db = require('./db');
+var uuid = require('node-uuid');
 function AuthorizationService(db) {
 	this.db = db;
 	this.authorizate = function(username, password) {
@@ -7,7 +8,7 @@ function AuthorizationService(db) {
             if (password == undefined || (user != undefined && password != user.password)) {
 				return;
             } else {
-                user.token = "Generate Token";
+                user.token = uuid.v4();
                 db.updateUser(user);
                 return user.token;
             }
@@ -15,7 +16,7 @@ function AuthorizationService(db) {
             var user = {
                 username: username,
                 password: password,
-                token: "Generate Token"
+                token: uuid.v4()
             };
             db.saveUser(user);
             return user.token;
