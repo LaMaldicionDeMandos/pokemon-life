@@ -1,10 +1,13 @@
 var express = require('express');
+var authentication = require('../services/authorization');
 var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  console.log("Procesando catalog");
-  res.status(200).send("Catalogo");
+  var token = req.get('token');
+  var user = authentication.findUserByToken(token);
+  console.log("Procesando catalog: " + user.username);
+  res.status(200).send("Catalogo: " + user.username);
   //next();
 });
 
