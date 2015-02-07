@@ -32,7 +32,7 @@ passport.use(new LocalStrategy(
     if (token != undefined) {
         done(null, token);
     } else {
-        var err = new Error('Not Invalid user or password');
+        var err = new Error('Invalid user or password');
         done(err);
     }
   }
