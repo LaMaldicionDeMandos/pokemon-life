@@ -1,5 +1,12 @@
 var db = require('./db');
 var uuid = require('node-uuid');
+var redis = require('redis');
+var client = redis.createClient();
+
+client.on('error', function (err) {
+    console.log('Error ' + err);
+});
+
 function AuthorizationService(db) {
 	this.db = db;
 	this.authorizate = function(username, password) {
@@ -10,6 +17,7 @@ function AuthorizationService(db) {
             } else {
                 user.token = uuid.v4();
                 db.updateUser(user);
+                client.set('token', user);
                 return user.token;
             }
         } else {
