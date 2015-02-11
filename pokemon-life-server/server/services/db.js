@@ -1,22 +1,33 @@
-var _user;
+var redis = require('redis');
+var redisClient = redis.createClient();
+
+redisClient.on('error', function (err) {
+    console.log('Error ' + err);
+});
+
 function Db() {
-	this.findUserByToken = function(token) {
-		return _user;
+	//TODO
+	this.findUserByToken = function(token, callback) {
+		redisClient.get('token', callback);
+		return;
 	};
 
 	//TODO
 	this.findUserByUsername = this.findUserByToken;
 
+	//TODO
 	this.existUserByUsername = function(username) {
-		return _user != undefined && _user.username == username;
+		return false;
 	};
 
+	//TODO
 	this.updateUser = function(user) {
-		_user = user;
+		redisClient.set('token', JSON.stringify(user));
 	};
 
+	//TODO
 	this.saveUser = function(user) {
-		_user = user;
+		redisClient.set('token', JSON.stringify(user));
 	};
 };
 

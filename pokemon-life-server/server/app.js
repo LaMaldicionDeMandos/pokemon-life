@@ -55,6 +55,7 @@ app.post('/login', function(req, res, next) {
 //Use Routers
 app.all('/api/*', function(req, res, next) {
     var token = req.get('token');
+    //TODO ver porque ahora no devuelve nada
     var err = authorization.authenticate(token);
     next(err);
 });

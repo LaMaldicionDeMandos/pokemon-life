@@ -1,11 +1,5 @@
 var db = require('./db');
 var uuid = require('node-uuid');
-var redis = require('redis');
-var client = redis.createClient();
-
-client.on('error', function (err) {
-    console.log('Error ' + err);
-});
 
 function AuthorizationService(db) {
 	this.db = db;
@@ -17,7 +11,6 @@ function AuthorizationService(db) {
             } else {
                 user.token = uuid.v4();
                 db.updateUser(user);
-                client.set('token', user);
                 return user.token;
             }
         } else {
@@ -31,21 +24,20 @@ function AuthorizationService(db) {
         }
 	};
 	this.authenticate = function(token) {
-		var user = db.findUserByToken(token);
-		var err;
-        console.log("token: " + token);
-        console.log("Deberia ser:");
-        console.log("username: " + user.username);
-        console.log("password: " + user.password);
-        console.log("token: " + user.token);
-        if (user == null || token != user.token) {
-            err = new Error("Invalid Token");
-        }
-        return err;
+		var user = db.findUserByToken(token, function(err, user) {
+		    var _user = JSON.parse(user);
+		    console.log("User: " + user);
+		    console.log("Username: " + _user.username);
+		    console.log("token: " + token);
+            if (user == null || token != _user.token) {
+                err = new Error("Invalid Token");
+            }
+            return err;
+		});
 	};
 
-	this.findUserByToken = function(token) {
-		return db.findUserByToken(token);
+	this.findUserByToken = function(token, callback) {
+		return db.findUserByToken(token, callback);
 	};
 };
 var service = new AuthorizationService(db);
