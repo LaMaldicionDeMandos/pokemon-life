@@ -5,12 +5,11 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res) {
   var token = req.get('token');
-  authentication.findUserByToken(token, function(err, _user) {
-    var user = JSON.parse(_user);
-    console.log("Procesando catalog: " + user.username);
-    res.status(200).send("Catalogo: " + user.username);
-  });
-  //next();
+  var promise = authentication.findUserByToken(token);
+    promise.then(function(user) {
+      console.log("Procesando catalog: " + user.username);
+      res.status(200).send("Catalogo: " + user.username);
+    });
 });
 
 module.exports = router;

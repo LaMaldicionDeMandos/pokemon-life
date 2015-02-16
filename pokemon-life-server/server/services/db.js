@@ -1,5 +1,6 @@
 var redis = require('redis');
 var redisClient = redis.createClient();
+var q = require('q');
 
 redisClient.on('error', function (err) {
     console.log('Error ' + err);
@@ -7,9 +8,20 @@ redisClient.on('error', function (err) {
 
 function Db() {
 	//TODO
-	this.findUserByToken = function(token, callback) {
-		redisClient.get('token', callback);
-		return;
+	this.findUserByToken = function(token) {
+		var defer = q.defer();
+		redisClient.get(token, function(err, user) {
+			if (user != null) {
+				defer.resolve(JSON.parse(user));
+			} else {
+				if (err != null) {
+					defer.reject(err);
+				} else {
+					defer.reject(new Error("Not found user with token: " + token));
+				}
+			}
+		});
+		return defer.promise;
 	};
 
 	//TODO
@@ -22,12 +34,12 @@ function Db() {
 
 	//TODO
 	this.updateUser = function(user) {
-		redisClient.set('token', JSON.stringify(user));
+		redisClient.set(user.token, JSON.stringify(user));
 	};
 
 	//TODO
 	this.saveUser = function(user) {
-		redisClient.set('token', JSON.stringify(user));
+		redisClient.set(user.token, JSON.stringify(user));
 	};
 };
 

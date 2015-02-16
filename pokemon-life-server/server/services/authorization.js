@@ -24,20 +24,18 @@ function AuthorizationService(db) {
         }
 	};
 	this.authenticate = function(token) {
-		var user = db.findUserByToken(token, function(err, user) {
-		    var _user = JSON.parse(user);
-		    console.log("User: " + user);
-		    console.log("Username: " + _user.username);
-		    console.log("token: " + token);
-            if (user == null || token != _user.token) {
-                err = new Error("Invalid Token");
-            }
-            return err;
-		});
+	    var promise = db.findUserByToken(token);
+	    promise.then(function(user) {
+            console.log("User: " + user);
+    		console.log("Username: " + user.username);
+        	console.log("token: " + token);
+        	return user;
+	    });
+	    return promise;
 	};
 
-	this.findUserByToken = function(token, callback) {
-		return db.findUserByToken(token, callback);
+	this.findUserByToken = function(token) {
+		return db.findUserByToken(token);
 	};
 };
 var service = new AuthorizationService(db);
