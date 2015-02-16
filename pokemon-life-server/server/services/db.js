@@ -1,13 +1,13 @@
 var redis = require('redis');
 var redisClient = redis.createClient();
 var q = require('q');
+var MONTH_IN_SECONDS = 60*60*24*30;
 
 redisClient.on('error', function (err) {
     console.log('Error ' + err);
 });
 
 function Db() {
-	//TODO
 	this.findUserByToken = function(token) {
 		var defer = q.defer();
 		redisClient.get(token, function(err, user) {
@@ -34,12 +34,17 @@ function Db() {
 
 	//TODO
 	this.updateUser = function(user) {
-		redisClient.set(user.token, JSON.stringify(user));
+		saveOnRedis(user);
 	};
 
 	//TODO
 	this.saveUser = function(user) {
+		saveOnRedis(user);
+	};
+
+	var saveOnRedis = function(user) {
 		redisClient.set(user.token, JSON.stringify(user));
+        redisClient.expire(user.token, MONTH_IN_SECONDS);
 	};
 };
 
