@@ -13,6 +13,11 @@ var authorization = require('./services/authorization');
 
 var app = express();
 
+console.log("Starting server!!");
+
+var config = require('./config/config-' + app.get('env'));
+console.log("Config: config-" + config.name + ".json");
+
 app.set('view engine', 'jade');
 
 var passport = require('passport')
