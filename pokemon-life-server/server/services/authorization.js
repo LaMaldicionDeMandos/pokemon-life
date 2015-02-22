@@ -1,6 +1,13 @@
 var db = require('./db');
 var uuid = require('node-uuid');
 
+function ServiceBuilder() {
+    this.getService = function(db, config) {
+        db.open(config);
+        return new AuthorizationService(db);
+    }
+}
+
 function AuthorizationService(db) {
 	this.db = db;
 	this.authorizate = function(username, password) {
@@ -38,6 +45,6 @@ function AuthorizationService(db) {
 		return db.findUserByToken(token);
 	};
 };
-var service = new AuthorizationService(db);
+var builder = new ServiceBuilder();
 
-module.exports = service;
+module.exports = builder;

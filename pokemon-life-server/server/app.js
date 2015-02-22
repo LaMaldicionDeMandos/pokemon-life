@@ -4,19 +4,20 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var db = require('./services/db');
+
+var app = express();
+console.log("Starting server!!");
+var config = require('./config/config-' + app.get('env'));
+console.log("Config: config-" + config.name + ".json");
 
 // Routers
 var catalog = require('./routes/catalog');
 
 //Authorization
-var authorization = require('./services/authorization');
+var authorization = require('./services/authorization').getService(db, config);
 
-var app = express();
 
-console.log("Starting server!!");
-
-var config = require('./config/config-' + app.get('env'));
-console.log("Config: config-" + config.name + ".json");
 
 app.set('view engine', 'jade');
 

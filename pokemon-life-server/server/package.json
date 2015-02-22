@@ -18,6 +18,8 @@
     "node-uuid": "1.4.2",
     "redis": "0.12.x",
     "hiredis": "0.1.x",
-    "q": "1.x"
+    "q": "1.x",
+    "mongodb": "1.4.x",
+    "mongoose": "3.8.x"
   }
 }
