@@ -1,5 +1,6 @@
 var db = require('./db');
 var uuid = require('node-uuid');
+var q = require('q');
 
 function ServiceBuilder() {
     this.getService = function(db, config) {
@@ -11,24 +12,28 @@ function ServiceBuilder() {
 function AuthorizationService(db) {
 	this.db = db;
 	this.authorizate = function(username, password) {
-	    if (db.existUserByUsername(username)) {
-            var user = db.findUserByUsername(username);
-            if (password == undefined || (user != undefined && password != user.password)) {
-				return;
+        var defer = q.defer();
+        promise = db.findUserByUsername(username);
+        promise.then(function(user) {
+            console.log("Verify user Authentication:" + user.username);
+            if (password == undefined || password != user.password) {
+                defer.reject("El usuario no existe o la password es invalida");
             } else {
                 user.token = uuid.v4();
                 db.updateUser(user);
-                return user.token;
+                return defer.resolve(user.token);
             }
-        } else {
+        }, function(err) {
+            console.log("new User");
             var user = {
                 username: username,
                 password: password,
                 token: uuid.v4()
             };
             db.saveUser(user);
-            return user.token;
-        }
+            defer.resolve(user.token);
+        });
+        return defer.promise;
 	};
 	this.authenticate = function(token) {
 	    var promise = db.findUserByToken(token);

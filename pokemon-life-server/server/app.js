@@ -34,13 +34,15 @@ app.use(cookieParser());
 passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("Login: username: " + username + ", password: " + password);
-    var token = authorization.authorizate(username, password);
-    if (token != undefined) {
-        done(null, token);
-    } else {
-        var err = new Error('Invalid user or password');
-        done(err);
-    }
+    var promise = authorization.authorizate(username, password);
+    promise.then(function(token) {
+        if (token != undefined) {
+            done(null, token);
+        } else {
+            var err = new Error('Invalid user or password');
+            done(err);
+        }
+    });
   }
 ));
 

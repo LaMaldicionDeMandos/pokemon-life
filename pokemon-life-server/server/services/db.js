@@ -36,31 +36,51 @@ function Db() {
 		return defer.promise;
 	};
 
-	//TODO
-	this.findUserByUsername = this.findUserByToken;
-
-	//TODO
-	this.existUserByUsername = function(username) {
-		return false;
-	};
-
-	//TODO
-	this.updateUser = function(user) {
-		saveOnRedis(user);
-	};
-
-	//TODO
-	this.saveUser = function(user) {
-		saveOnRedis(user);
-		new User(user).save(function(err, _user) {
-			if(err) return console.log(err);
-			console.log("Saved user: " + _user.username);
+	this.findUserByUsername = function(username) {
+		var defer = q.defer();
+		User.findOne({username: username}, function(err, user) {
+			if (user != undefined) {
+				user = new User(user);
+				console.log("Found User: " + user);
+				defer.resolve(user);
+			} else {
+				console.log("Not Found User: " + username);
+				defer.reject(err);
+			}
 		});
+		return defer.promise;
+	}
+
+	this.updateUser = function(user) {
+		console.log("Udating user: " + user.username + " token: " + user.token);
+		saveOnRedis(user);
+		updateOnMongo(user);
+	};
+
+	this.saveUser = function(user) {
+		console.log("Saving user: " + user.username + " token: " + user.token);
+		saveOnRedis(user);
+		saveOnMongo(user);
 	};
 
 	var saveOnRedis = function(user) {
 		redisClient.set(user.token, JSON.stringify(user));
         redisClient.expire(user.token, MONTH_IN_SECONDS);
+	};
+
+	var saveOnMongo = function(user) {
+		new User(user).save(function(err, _user) {
+        	if(err) return console.log(err);
+        		console.log("Saved user: " + _user.username);
+        	});
+	};
+
+	var updateOnMongo = function(user) {
+		var query = {_id : user._id};
+		User.update(query, user, function(err, result) {
+			if(err) return console.log(err);
+			console.log("Updated result: " + result);
+		});
 	};
 };
 
