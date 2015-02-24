@@ -69,18 +69,19 @@ function Db() {
 	};
 
 	var saveOnMongo = function(user) {
-		new User(user).save(function(err, _user) {
-        	if(err) return console.log(err);
-        		console.log("Saved user: " + _user.username);
-        	});
+		new User(user).save(curringLogger("Saved user: "));
 	};
 
 	var updateOnMongo = function(user) {
 		var query = {_id : user._id};
-		User.update(query, user, function(err, result) {
-			if(err) return console.log(err);
-			console.log("Updated result: " + result);
-		});
+		User.update(query, user, cuttingLogger("Update result: "));
+	};
+};
+
+function curringLogger(message) {
+	return function(err, result) {
+		if (err) return console.log(err);
+		console.log(message + result);
 	};
 };
 
