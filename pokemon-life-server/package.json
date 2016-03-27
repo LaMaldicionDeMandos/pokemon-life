@@ -1,0 +1,35 @@
+{
+  "name": "pokemon-life-server",
+  "version": "0.0.1",
+  "description": "Servidor de Pokemon Life",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    
+  },
+  "devDependencies": {
+    "assert": "1.3.0",
+    "mocha": "^2.3.0",
+    "nock": "^2.10.0",
+    "qunitjs": "^1.22.0",
+    "should": "^7.1.0",
+    "should-http": "^0.0.4",
+    "sinon": "^1.17.1",
+    "mockery": "^1.4.1",
+    "supertest": "^1.1.0"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "hhttps://github.com/LaMaldicionDeMandos/pokemon-life"
+  },
+  "keywords": [
+    "node",
+    "pokemon"
+  ],
+  "license": "MIT"
+}
