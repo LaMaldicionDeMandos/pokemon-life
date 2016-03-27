@@ -29,3 +29,5 @@ node_modules
 
 #IntelliJ
 .idea
+
+.DS_Store

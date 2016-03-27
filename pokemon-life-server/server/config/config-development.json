@@ -1,6 +1,0 @@
-{
-	"name": "development",
-  	"db": {
-	  "url": "mongodb://localhost/pokemon"
-	}
-}
