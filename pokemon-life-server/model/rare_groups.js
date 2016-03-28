@@ -90,6 +90,17 @@ function RareGroupResolver() {
 			return value + item.weight;
 		}, 0);
 	};
+	this.getRandomNumber = function() {
+		var size = this.groupSize();
+		return Math.round(Math.random() * size);
+	};
+	this.getGroup = function(value) {
+		var sum = 0
+		return this.groups.find(function(group) {
+			sum+= group.weight;
+			return value <= sum;
+		});
+	};
 	this.getRandom = function() {
 
 	};
