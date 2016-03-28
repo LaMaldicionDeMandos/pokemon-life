@@ -90,9 +90,8 @@ function RareGroupResolver() {
 			return value + item.weight;
 		}, 0);
 	};
-	this.getRandomNumber = function() {
-		var size = this.groupSize();
-		return Math.round(Math.random() * size);
+	this.getRandomNumber = function(size) {
+		return Math.floor(Math.random() * size);
 	};
 	this.getGroup = function(value) {
 		var sum = 0
@@ -101,8 +100,13 @@ function RareGroupResolver() {
 			return value <= sum;
 		});
 	};
-	this.getRandom = function() {
-
+	this.getRandomPokemonInGroup = function(group){
+		var index = this.getRandomNumber(group.pokemons.length);
+		return group.pokemons[index];
+	};
+	this.getRandomPokemon = function() {
+		var group = this.getGroup(this.getRandomNumber(this.groupSize()));
+		return this.getRandomPokemonInGroup(group);
 	};
 };
 

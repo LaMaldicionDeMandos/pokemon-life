@@ -10,9 +10,25 @@ describe('Group', function() {
     });
 
     it('the random number must be between 0 and 16034', function() {
-        var num = service.getRandomNumber();
+        var num = service.getRandomNumber(16034);
         assert.ok(0 <= num);
-        assert.ok(16034 >= num);
+        assert.ok(16034 > num);
+    });
+
+    it('if group is of 1 pokemon, then, should return always same pokemon', function() {
+        var group = service.groups[1];
+        var pokemon = service.getRandomPokemonInGroup(group);
+        for(var i = 0; i < 100; i++) {
+            assert.equal(pokemon, 113);
+        }
+    });
+
+    it('if group is of 2 pokemon, then, should return always one of two', function() {
+        var group = service.groups[3];
+        var pokemon = service.getRandomPokemonInGroup(group);
+        for(var i = 0; i < 100; i++) {
+            assert.ok(36 == pokemon || 143 == pokemon);
+        }
     });
 
     it('if the number is between 0 and 12, then group is the first', function() {
