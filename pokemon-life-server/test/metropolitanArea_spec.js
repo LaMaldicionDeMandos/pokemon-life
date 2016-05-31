@@ -159,4 +159,38 @@ describe('Metropolitan Area', function() {
             assert.equal(-57.855377197265625, maxLon);
         });
     });
+
+    describe('Internal square point', function() {
+        it('should be internal the square', function() {
+            var point = service.createSquarePoint();
+            assert(point.lat >= service.minSquareLat);
+            assert(point.lat <= service.maxSquareLat);
+            assert(point.lon >= service.minSquareLon);
+            assert(point.lon >= service.minSquareLon);
+        });
+    });
+
+    describe('Internal area point', function() {
+        var p = [
+            {lat: 0, lon: 0},
+            {lat: 1, lon: 3},
+            {lat: 2, lon: 0},
+            {lat: 1, lon: 1}
+        ];
+        var lessThan = [
+            {minLat: 0, maxLat: 1, c: 1},
+            {minLat: 1, maxLat: 2, c: -1}
+        ];
+        var greaterThan = [
+            {minLat: 0, maxLat: 1, c: 3},
+            {minLat: 1, maxLat: 2, c: -3}
+        ];
+        beforeEach(function() {
+            service = new Area(p, lessThan, greaterThan);
+        });
+        it('should be internal the area', function() {
+            var point = service.createPoint();
+            assert(service.match(point));
+        });
+    });
 });

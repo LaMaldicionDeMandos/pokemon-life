@@ -74,7 +74,25 @@ var Area = function(points, lt, gt) {
             return false;
         }
 
-    }
+    };
+
+    this.createSquarePoint = function() {
+        var lat = Math.random()*(this.maxSquareLat - this.minSquareLat) + this.minSquareLat;
+        var lon = Math.random()*(this.maxSquareLon - this.minSquareLon) + this.minSquareLon;
+        return {lat: lat, lon: lon};
+    };
+
+    this.createPoint = function() {
+        var found = false;
+        var iterations = 0;
+        while(!found) {
+            iterations++;
+            var point = this.createSquarePoint();
+            found = this.match(point);
+        }
+        console.log('Iteraciones: ' + iterations);
+        return point;
+    };
 };
 
 module.exports = Area;
