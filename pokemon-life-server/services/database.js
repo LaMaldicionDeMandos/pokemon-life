@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var PokemonSchema = new Schema({_id:String, type:String, lat:Number, lon:Number});
+var PokemonSchema = new Schema({_id:String, type:Number, lat:Number, lon:Number});
 
 
 var Pokemon = mongoose.model('Pokemon', PokemonSchema);
