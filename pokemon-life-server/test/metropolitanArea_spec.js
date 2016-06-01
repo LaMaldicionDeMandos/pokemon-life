@@ -18,10 +18,28 @@ p = [
     {lat: -34.504859090252026, lon: -58.82904052734375}
 ];
 
+firstLon = p[3].lon;
+greaterThan = [
+    {minLat: p[3].lat, maxLat: p[2].lat, c: Area.slope(p[2], p[3])},
+    {minLat: p[2].lat, maxLat: p[1].lat, c: Area.slope(p[1], p[2])},
+    {minLat: p[1].lat, maxLat: p[0].lat, c: Area.slope(p[0], p[1])},
+];
+
+lessThan = [
+    {minLat: p[3].lat, maxLat: p[4].lat, c: Area.slope(p[4], p[3])},
+    {minLat: p[4].lat, maxLat: p[5].lat, c: Area.slope(p[5], p[4])},
+    {minLat: p[5].lat, maxLat: p[6].lat, c: Area.slope(p[6], p[5])},
+    {minLat: p[6].lat, maxLat: p[7].lat, c: Area.slope(p[7], p[6])},
+    {minLat: p[7].lat, maxLat: p[8].lat, c: Area.slope(p[8], p[7])},
+    {minLat: p[8].lat, maxLat: p[9].lat, c: Area.slope(p[9], p[8])},
+    {minLat: p[9].lat, maxLat: p[0].lat, c: Area.slope(p[0], p[9])}
+
+];
+
 describe('Metropolitan Area', function() {
     var service;
     beforeEach(function() {
-        service = new Area(p);
+        service = new Area(p, lessThan, greaterThan, firstLon);
     });
 
     describe('Slope', function() {
@@ -38,6 +56,8 @@ describe('Metropolitan Area', function() {
             {lat: 2, lon: 0},
             {lat: 1, lon: 1}
         ];
+
+        var firstLon = 0;
         var lessThan = [
             {minLat: 0, maxLat: 1, c: 1},
             {minLat: 1, maxLat: 2, c: -1}
@@ -47,7 +67,7 @@ describe('Metropolitan Area', function() {
             {minLat: 1, maxLat: 2, c: -3}
         ];
         beforeEach(function() {
-            service = new Area(p, lessThan, greaterThan);
+            service = new Area(p, lessThan, greaterThan, firstLon);
         });
         it('lessthan function(0) = 0', function() {
             var result = service.lf(0);
@@ -80,22 +100,25 @@ describe('Metropolitan Area', function() {
         var p = [
             {lat: 0, lon: 0},
             {lat: 1, lon: 3},
-            {lat: 2, lon: 0},
-            {lat: 1, lon: 1}
+            {lat: 2, lon: 2},
+            {lat: 3, lon: -1},
+            {lat: 1, lon: -2},
         ];
+        var firstLon = 0;
         var lessThan = [
-            {minLat: 0, maxLat: 1, c: 1},
-            {minLat: 1, maxLat: 2, c: -1}
+            {minLat: 0, maxLat: 1, c: -2},
+            {minLat: 1, maxLat: 3, c: 0.5}
         ];
         var greaterThan = [
             {minLat: 0, maxLat: 1, c: 3},
-            {minLat: 1, maxLat: 2, c: -3}
+            {minLat: 1, maxLat: 2, c: -1},
+            {minLat: 2, maxLat: 3, c: -3}
         ];
         beforeEach(function() {
-            service = new Area(p, lessThan, greaterThan);
+            service = new Area(p, lessThan, greaterThan, firstLon);
         });
         it('should unmatch under', function() {
-            var p = {lat: 1, lon: 0};
+            var p = {lat: 1, lon: -3};
             assert(!service.match(p));
         });
 
@@ -105,7 +128,7 @@ describe('Metropolitan Area', function() {
         });
 
         it('should unmatch over x', function() {
-            var p = {lat: 3, lon: 0};
+            var p = {lat: 4, lon: 0};
             assert(!service.match(p));
         });
 
@@ -116,6 +139,16 @@ describe('Metropolitan Area', function() {
 
         it('should match into', function() {
             var p = {lat: 1, lon: 2};
+            assert(service.match(p));
+        });
+
+        it('should match into 2', function() {
+            var p = {lat: 1, lon: 0};
+            assert(service.match(p));
+        });
+
+        it('should match into 3', function() {
+            var p = {lat: 2.5, lon:.2};
             assert(service.match(p));
         });
 
@@ -177,6 +210,8 @@ describe('Metropolitan Area', function() {
             {lat: 2, lon: 0},
             {lat: 1, lon: 1}
         ];
+
+        var firstLon = 0;
         var lessThan = [
             {minLat: 0, maxLat: 1, c: 1},
             {minLat: 1, maxLat: 2, c: -1}
@@ -186,10 +221,46 @@ describe('Metropolitan Area', function() {
             {minLat: 1, maxLat: 2, c: -3}
         ];
         beforeEach(function() {
-            service = new Area(p, lessThan, greaterThan);
+            service = new Area(p, lessThan, greaterThan, firstLon);
         });
         it('should be internal the area', function() {
             var point = service.createPoint();
+            assert(service.match(point));
+        });
+    });
+
+    describe('Complex values', function() {
+        var p = [
+            {lat: -5, lon: -2},
+            {lat: -4, lon: 0},
+            {lat: -3, lon: -3},
+            {lat: -2, lon: -4},
+            {lat: -4, lon: -8},
+        ];
+        var firstLon = -2;
+        var lessThan = [
+            {minLat: -5, maxLat: -4, c: -6},
+            {minLat: -4, maxLat: -2, c: 2}
+        ];
+        var greaterThan = [
+            {minLat: -5, maxLat: -4, c: 2},
+            {minLat: -4, maxLat: -3, c: -3},
+            {minLat: -3, maxLat: -2, c: -1}
+        ];
+        beforeEach(function() {
+            service = new Area(p, lessThan, greaterThan, firstLon);
+        });
+        it('-2.5 should match in -4.5', function() {
+            assert(service.match({lat: -2.5, lon: -4.5}));
+        });
+        it('-4.5 should match in -3', function() {
+            assert(service.match({lat: -4.5, lon: -3}));
+        });
+    });
+
+    describe('Real values', function() {
+        var point = {lat:-34.52278882128688, lon:-58.51549427423343};
+        it('should match', function() {
             assert(service.match(point));
         });
     });

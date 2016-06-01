@@ -15,22 +15,25 @@ p = [
 {lat: -34.504859090252026, lon: -58.82904052734375}
 ];
 
-var area = new Area(p);
+var firstLon = p[3].lon;
 
-area.lessThan = [
-    {minLat: p[1], maxLat: p[0], c: area.slope(p[0], p[1])},
-    {minLat: p[2], maxLat: p[1], c: area.slope(p[1], p[2])},
-    {minLat: p[3], maxLat: p[2], c: area.slope(p[2], p[3])},
+var greaterThan = [
+    {minLat: p[3].lat, maxLat: p[2].lat, c: Area.slope(p[2], p[3])},
+    {minLat: p[2].lat, maxLat: p[1].lat, c: Area.slope(p[1], p[2])},
+    {minLat: p[1].lat, maxLat: p[0].lat, c: Area.slope(p[0], p[1])},
 ];
 
-area.greaterThan = [
-    {minLat: p[9], maxLat: p[0], c: area.slope(p[0], p[9])},
-    {minLat: p[8], maxLat: p[9], c: area.slope(p[9], p[8])},
-    {minLat: p[7], maxLat: p[8], c: area.slope(p[8], p[7])},
-    {minLat: p[6], maxLat: p[7], c: area.slope(p[7], p[6])},
-    {minLat: p[5], maxLat: p[6], c: area.slope(p[6], p[5])},
-    {minLat: p[4], maxLat: p[5], c: area.slope(p[5], p[4])},
-    {minLat: p[3], maxLat: p[4], c: area.slope(p[4], p[3])}
+var lessThan = [
+    {minLat: p[3].lat, maxLat: p[4].lat, c: Area.slope(p[4], p[3])},
+    {minLat: p[4].lat, maxLat: p[5].lat, c: Area.slope(p[5], p[4])},
+    {minLat: p[5].lat, maxLat: p[6].lat, c: Area.slope(p[6], p[5])},
+    {minLat: p[6].lat, maxLat: p[7].lat, c: Area.slope(p[7], p[6])},
+    {minLat: p[7].lat, maxLat: p[8].lat, c: Area.slope(p[8], p[7])},
+    {minLat: p[8].lat, maxLat: p[9].lat, c: Area.slope(p[9], p[8])},
+    {minLat: p[9].lat, maxLat: p[0].lat, c: Area.slope(p[0], p[9])}
+
 ];
+
+var area = new Area(p, lessThan, greaterThan, firstLon);
 
 module.exports = area;

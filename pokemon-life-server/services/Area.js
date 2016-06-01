@@ -34,7 +34,7 @@ function findTramaIndex(x, funcs) {
     return null;
 };
 
-var Area = function(points, lt, gt) {
+var Area = function(points, lt, gt, firstLon) {
     var points = points;
     this.minSquareLat = minSquareLat(points);
     this.minSquareLon = minSquareLon(points);
@@ -52,7 +52,7 @@ var Area = function(points, lt, gt) {
         }
         var index = findTramaIndex(x, t);
         if (index == 0) {
-            return t[index].c*x + this.minSquareLat;
+            return t[index].c*(x - t[index].minLat) + firstLon;
         } else {
             return t[index].c*(x - t[index].minLat) + this.f(t[index-1].maxLat, t);
         }
@@ -93,6 +93,10 @@ var Area = function(points, lt, gt) {
         console.log('Iteraciones: ' + iterations);
         return point;
     };
+};
+
+Area.slope = function(p1, p2) {
+    return (p2.lon - p1.lon)/(p2.lat - p1.lat);
 };
 
 module.exports = Area;
