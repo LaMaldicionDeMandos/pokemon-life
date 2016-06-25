@@ -3,6 +3,7 @@
     package="org.pasut.android.games.pokemonlife">
 
     <application
+        android:name=".PokemonLifeApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +17,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyALLNbwry4iGCD3u-x0sbAZjmLow2_RlO8" />
 
-        <activity android:name=".MapActivity">
+        <activity android:name=".activities.MapActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
