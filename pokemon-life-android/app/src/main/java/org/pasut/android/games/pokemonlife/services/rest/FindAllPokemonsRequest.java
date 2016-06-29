@@ -1,34 +1,50 @@
 package org.pasut.android.games.pokemonlife.services.rest;
 
+import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
+import com.google.api.client.http.HttpResponse;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.Lists;
+import com.google.gson.reflect.TypeToken;
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+
+import org.pasut.android.games.pokemonlife.model.Pokemon;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * Created by boot on 6/25/16.
  */
-public class FindAllPokemonsRequest extends GoogleHttpClientSpiceRequest<String> {
+public class FindAllPokemonsRequest extends GoogleHttpClientSpiceRequest<List<Pokemon>> {
     protected final String url;
     protected final String path;
 
-    public FindAllPokemonsRequest(final String protocol, final String host, final int port,
-                           final String path, final Class<String> clazz) {
-        super(clazz);
-        this.url = protocol + "://" + host + ":" + port + "/";
-        this.path = this.url + path;
+    private final static Class<List<Pokemon>> getClazz() {
+        List<Pokemon> list = Lists.newArrayList();
+        return (Class<List<Pokemon>>)list.getClass();
     }
 
-    /* TODO
+    private final static Type type = new TypeToken<List<Pokemon>>(){}.getType();
+
+
+    public FindAllPokemonsRequest(final String protocol, final String host, final int port) {
+        super(getClazz());
+        this.url = protocol + "://" + host + ":" + port + "/pokemons";
+        this.path = this.url;
+    }
+
     @Override
-    public String loadDataFromNetwork() throws Exception {
+    public List<Pokemon> loadDataFromNetwork() throws Exception {
         HttpRequest request = getHttpRequestFactory()
                 .buildGetRequest(new GenericUrl(path));
         request.setParser(new GsonFactory().createJsonObjectParser());
         HttpResponse response = request.execute();
-        List<Market> result = (List<Market>) response.parseAs(type);
+        List<Pokemon> result = (List<Pokemon>) response.parseAs(type);
         return result;
     }
-*/
+
     public String cacheKey() {
         return path;
     }
