@@ -10,9 +10,12 @@ import org.pasut.android.games.pokemonlife.model.Pokemon;
 
 import java.util.List;
 
+import roboguice.inject.ContextSingleton;
+
 /**
  * Created by boot on 6/29/16.
  */
+@ContextSingleton
 public class RestService {
     private final SpiceManager spice;
     private final String protocol;
@@ -33,5 +36,15 @@ public class RestService {
 
     public void allPokemons(final RequestListener<List<Pokemon>> listener) {
         executeRequest(new FindAllPokemonsRequest(protocol, host, port), listener);
+    }
+
+    public void start(final Context context) {
+        if(!spice.isStarted()) {
+            spice.start(context);
+        }
+    }
+
+    public void shouldStop() {
+        spice.shouldStop();
     }
 }
