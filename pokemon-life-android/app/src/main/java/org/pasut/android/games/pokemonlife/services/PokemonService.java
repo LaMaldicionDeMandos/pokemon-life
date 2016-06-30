@@ -6,10 +6,10 @@ import android.os.Parcelable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.inject.Inject;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
-import org.pasut.android.games.pokemonlife.PokemonLifeApplication;
 import org.pasut.android.games.pokemonlife.model.Pokemon;
 import org.pasut.android.games.pokemonlife.services.rest.RestService;
 import org.roboguice.shaded.goole.common.base.Preconditions;
@@ -30,6 +30,7 @@ public class PokemonService implements Destroyable {
     private Context context;
     private RestService restService;
 
+    @Inject
     public PokemonService(final Context context, final RestService restService) {
         this.restService = restService;
         this.restService.start(context);

@@ -2,6 +2,7 @@ package org.pasut.android.games.pokemonlife.services.rest;
 
 import android.content.Context;
 
+import com.google.inject.Inject;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -22,6 +23,7 @@ public class RestService {
     private final String host;
     private final int port;
 
+    @Inject
     public RestService(final SpiceManager spice, final Context context) {
         this.spice = spice;
         this.protocol = context.getString(R.string.protocol);
