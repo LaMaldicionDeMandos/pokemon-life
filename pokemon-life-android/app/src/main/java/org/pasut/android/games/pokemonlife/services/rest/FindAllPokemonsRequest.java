@@ -17,9 +17,7 @@ import java.util.List;
 /**
  * Created by boot on 6/25/16.
  */
-public class FindAllPokemonsRequest extends GoogleHttpClientSpiceRequest<List<Pokemon>> {
-    protected final String url;
-    protected final String path;
+public class FindAllPokemonsRequest extends AbstractRequest<List<Pokemon>> {
 
     private final static Class<List<Pokemon>> getClazz() {
         List<Pokemon> list = Lists.newArrayList();
@@ -30,9 +28,7 @@ public class FindAllPokemonsRequest extends GoogleHttpClientSpiceRequest<List<Po
 
 
     public FindAllPokemonsRequest(final String protocol, final String host, final int port) {
-        super(getClazz());
-        this.url = protocol + "://" + host + ":" + port + "/pokemons";
-        this.path = this.url;
+        super(protocol, host, port, "pokemons", getClazz());
     }
 
     @Override
@@ -45,11 +41,4 @@ public class FindAllPokemonsRequest extends GoogleHttpClientSpiceRequest<List<Po
         return result;
     }
 
-    public String cacheKey() {
-        return path;
-    }
-
-    public long cacheDuration() {
-        return DurationInMillis.ONE_MINUTE;
-    }
 }
