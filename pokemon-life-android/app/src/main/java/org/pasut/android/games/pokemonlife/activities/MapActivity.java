@@ -128,10 +128,11 @@ public class MapActivity extends RoboFragmentActivity
     };
 
     private void populatePokemons(final List<Pokemon> pokemons, final GoogleMap map) {
+        String[] names = getResources().getStringArray(R.array.pomemon_names);
         for (Pokemon pokemon : pokemons) {
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(pokemon.getLat(), pokemon.getLon()))
-                    .title("Pokemon"));
+                    .title(names[pokemon.getType()]));
         }
     }
 
