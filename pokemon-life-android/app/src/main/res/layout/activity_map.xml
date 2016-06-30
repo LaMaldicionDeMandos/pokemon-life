@@ -9,7 +9,7 @@
     <fragment
         android:name="com.google.android.gms.maps.MapFragment"
         android:id="@+id/map"
-        map:cameraZoom="13"
+        map:cameraZoom="16"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>
