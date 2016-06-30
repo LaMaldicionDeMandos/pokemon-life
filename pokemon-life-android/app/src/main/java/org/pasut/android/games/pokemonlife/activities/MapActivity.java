@@ -12,11 +12,15 @@ import android.util.Log;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.inject.Inject;
 
 import org.pasut.android.games.pokemonlife.R;
 import org.pasut.android.games.pokemonlife.model.Pokemon;
 import org.pasut.android.games.pokemonlife.services.PokemonService;
+import org.roboguice.shaded.goole.common.collect.Iterables;
+import org.roboguice.shaded.goole.common.collect.Iterators;
 
 import java.util.List;
 
@@ -26,6 +30,11 @@ import roboguice.inject.ContentView;
 @ContentView(R.layout.activity_map)
 public class MapActivity extends RoboFragmentActivity implements OnMapReadyCallback {
     private final static String TAG = MapActivity.class.getSimpleName();
+
+    List<Pokemon> pokemons;
+    private boolean mapIsready;
+    private GoogleMap map;
+
     @Inject
     private PokemonService pokemonService;
 
@@ -42,7 +51,11 @@ public class MapActivity extends RoboFragmentActivity implements OnMapReadyCallb
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        mapIsready = true;
+        map = googleMap;
+        if (pokemons != null) {
+            populatePokemons(pokemons, map);
+        }
     }
 
     @Override
@@ -56,8 +69,18 @@ public class MapActivity extends RoboFragmentActivity implements OnMapReadyCallb
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            List<Pokemon> pokemons = intent.getExtras().getParcelableArrayList("data");
-            Log.d(TAG, "Populating pokemons: " + pokemons);
+        pokemons = intent.getExtras().getParcelableArrayList("data");
+        if (mapIsready) {
+            populatePokemons(pokemons, map);
+        }
         }
     };
+
+    private void populatePokemons(final List<Pokemon> pokemons, final GoogleMap map) {
+        for (Pokemon pokemon : pokemons) {
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(pokemon.getLat(), pokemon.getLon()))
+                    .title("Pokemon"));
+        }
+    }
 }
